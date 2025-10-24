@@ -1,0 +1,36 @@
+# Environment variables
+.env
+
+# DuckDB database files
+*.duckdb
+*.duckdb.wal
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+venv/
+env/
+
+# dbt
+tfl_dbt/target/
+tfl_dbt/dbt_packages/
+tfl_dbt/logs/
+tfl_dbt/profiles/.user.yml
+**/.user.yml
+
+# Dagster
+.dagster_home/
+.tmp_dagster_home*/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store

@@ -1,0 +1,29 @@
+[0m22:28:23.183443 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10b50c430>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10c555210>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10c5558d0>]}
+
+
+============================== 22:28:23.199491 | 57eb642d-2a18-4027-b488-f9f5a5da7c82 ==============================
+[0m22:28:23.199491 [info ] [MainThread]: Running with dbt=1.10.13
+[0m22:28:23.202254 [debug] [MainThread]: running dbt with arguments {'use_experimental_parser': 'False', 'version_check': 'True', 'log_path': 'logs', 'log_format': 'default', 'profiles_dir': '/Users/Victor/.dbt', 'cache_selected_only': 'False', 'invocation_command': 'dbt init tfl_dbt --skip-profile-setup', 'target_path': 'None', 'fail_fast': 'False', 'static_parser': 'True', 'printer_width': '80', 'write_json': 'True', 'indirect_selection': 'eager', 'log_cache_events': 'False', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'introspect': 'True', 'no_print': 'None', 'debug': 'False', 'empty': 'None', 'quiet': 'False', 'warn_error': 'None', 'use_colors': 'True', 'partial_parse': 'True', 'send_anonymous_usage_stats': 'True'}
+[0m22:28:23.311618 [info ] [MainThread]: Creating dbt configuration folder at /Users/Victor/.dbt
+[0m22:28:23.319710 [debug] [MainThread]: Starter project path: /Users/Victor/Desktop/Professional_Administrative/Learning/Tech/Mini_projects/TfL/venv/lib/python3.10/site-packages/dbt/include/starter_project
+[0m22:28:23.354787 [info ] [MainThread]: 
+Your new dbt project "tfl_dbt" was created!
+
+For more information on how to configure the profiles.yml file,
+please consult the dbt documentation here:
+
+  https://docs.getdbt.com/docs/configure-your-profile
+
+One more thing:
+
+Need help? Don't hesitate to reach out to us via GitHub issues or on Slack:
+
+  https://community.getdbt.com/
+
+Happy modeling!
+
+[0m22:28:23.380236 [debug] [MainThread]: Resource report: {"command_name": "init", "command_success": true, "command_wall_clock_time": 0.5945614, "process_in_blocks": "0", "process_kernel_time": 0.660643, "process_mem_max_rss": "95432704", "process_out_blocks": "0", "process_user_time": 2.993389}
+[0m22:28:23.381566 [debug] [MainThread]: Command `dbt init` succeeded at 22:28:23.381352 after 0.60 seconds
+[0m22:28:23.382286 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10b50c430>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10c32fe80>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10c557ca0>]}
+[0m22:28:23.382939 [debug] [MainThread]: Flushing usage events
+[0m22:28:24.008632 [debug] [MainThread]: An error was encountered while trying to flush usage events

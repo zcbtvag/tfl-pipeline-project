@@ -1,5 +1,10 @@
 dagster
 dagster-cloud
+dagster-dbt
+dbt-core
+dbt-duckdb
+duckdb
+requests
 
 [dev]
 dagster-webserver
