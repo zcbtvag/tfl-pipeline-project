@@ -1,0 +1,62 @@
+version: 2
+
+models:
+  - name: stg_bike_points
+    description: "Staging layer for TfL bike point data - cleaned and standardized from raw JSON"
+    columns:
+      - name: id
+        description: "Unique identifier for the bike point (e.g., BikePoints_2)"
+        tests:
+          - unique
+          - not_null
+
+      - name: common_name
+        description: "Common name of the bike point location (e.g., 'Phillimore Gardens, Kensington')"
+        tests:
+          - not_null
+
+      - name: place_type
+        description: "Type of place - always 'BikePoint' for this dataset"
+
+      - name: lat
+        description: "Latitude coordinate"
+        tests:
+          - not_null
+
+      - name: lon
+        description: "Longitude coordinate"
+        tests:
+          - not_null
+
+      - name: terminal_name
+        description: "Terminal identifier for the bike point"
+
+      - name: installed
+        description: "Whether the bike point is currently installed (true/false)"
+
+      - name: locked
+        description: "Whether the bike point is locked (true/false)"
+
+      - name: install_date
+        description: "Installation date as Unix timestamp in milliseconds"
+
+      - name: removal_date
+        description: "Removal date if applicable"
+
+      - name: temporary
+        description: "Whether the bike point is temporary (true/false)"
+
+      - name: nb_bikes
+        description: "Total number of bikes currently available"
+
+      - name: nb_empty_docks
+        description: "Number of empty docking stations"
+
+      - name: nb_docks
+        description: "Total number of docking stations"
+
+      - name: nb_standard_bikes
+        description: "Number of standard bikes available"
+
+      - name: nb_ebikes
+        description: "Number of e-bikes available"
