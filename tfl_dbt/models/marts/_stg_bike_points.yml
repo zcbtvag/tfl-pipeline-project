@@ -2,10 +2,10 @@ version: 2
 
 models:
   - name: bike_point_availability
-    description: "Analytics-ready bike point data with availability metrics, categoriation, and type conversions"
+    description: "Analytics-ready bike point data with availability metrics, categorisation, and type conversions"
     columns:
-      - name: id
-        description: "Unique identifier for the bike point"
+      - name: bike_point_id
+        description: "Unique identifier (PK) for the bike point"
         tests:
           - unique
           - not_null
@@ -31,14 +31,14 @@ models:
       - name: total_docks
         description: "Total number of docking stations"
 
-      - name: utilization_pct
-        description: "Percentage of docks currently occupied by bikes (0-100)"
+      - name: utilisation_pct
+        description: "Percentage of empty bike docks (0-100)"
 
       - name: availability_pct
-        description: "Percentage of docks currently empty (0-100)"
+        description: "Percentage of bikes currently available (0-100)"
 
       - name: availability_status
-        description: "Categorized availability status based on bike-to-dock ratio"
+        description: "Categorised availability status based on bike-to-dock ratio"
         tests:
           - accepted_values:
               arguments:

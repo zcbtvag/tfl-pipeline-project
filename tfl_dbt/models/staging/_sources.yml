@@ -1,0 +1,12 @@
+version: 2
+
+sources:
+  - name: raw
+    description: "Raw data loaded from TfL API by Dagster"
+    schema: raw
+    tables:
+      - name: bike_points
+        description: "Raw bike point data from TfL API with nested JSON structure"
+        meta:
+          dagster:
+            asset_key: ["raw_tfl_bike_points"]

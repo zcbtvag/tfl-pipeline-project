@@ -68,5 +68,7 @@ def tfl_dbt_models(context: AssetExecutionContext, dbt: DbtCliResource):
     dbt models for TfL data transformation.
     Layer 2 (Staging): stg_bike_points - cleaned and flattened data
     Layer 3 (Marts): bike_point_availability - analytics-ready metrics
+
+    Depends on raw_tfl_bike_points to ensure raw data is loaded first.
     """
     yield from dbt.cli(["build"], context=context).stream()

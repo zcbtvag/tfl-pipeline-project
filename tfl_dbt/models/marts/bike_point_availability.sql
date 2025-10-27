@@ -10,7 +10,7 @@ with bike_points as (
 
 availability_metrics as (
     select
-        id,
+        id as bike_point_id,
         common_name,
         terminal_name,
         lat,
@@ -27,13 +27,13 @@ availability_metrics as (
             when cast(nb_docks as integer) > 0
             then round(cast(nb_bikes as float) / cast(nb_docks as float) * 100, 2)
             else 0
-        end as utilisation_pct,
+        end as availability_pct,
 
         case
             when cast(nb_docks as integer) > 0
             then round(cast(nb_empty_docks as float) / cast(nb_docks as float) * 100, 2)
             else 0
-        end as availability_pct,
+        end as utilisation_pct,
 
         -- Categorise availability status
         case

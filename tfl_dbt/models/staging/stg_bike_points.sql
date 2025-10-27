@@ -5,7 +5,7 @@
 }}
 
 with source as (
-    select * from raw.bike_points
+    select * from {{ source('raw', 'bike_points') }}
 ),
 
 -- Extract nested properties from additionalProperties array

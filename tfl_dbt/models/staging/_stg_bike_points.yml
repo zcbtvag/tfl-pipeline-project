@@ -2,10 +2,10 @@ version: 2
 
 models:
   - name: stg_bike_points
-    description: "Staging layer for TfL bike point data - cleaned and standardized from raw JSON"
+    description: "Staging layer for TfL bike point data - cleaned and standardised from raw JSON. The grain of this table is one unique bike point per row."
     columns:
       - name: id
-        description: "Unique identifier for the bike point (e.g., BikePoints_2)"
+        description: "Unique identifier (PK) for the bike point (e.g., BikePoints_2)"
         tests:
           - unique
           - not_null
