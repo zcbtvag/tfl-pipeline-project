@@ -5,7 +5,7 @@
 }}
 
 with bike_points as (
-    select * from {{ ref('stg_bike_points') }}
+    select * from {{ ref('stg_tfl__bike_points') }}
 ),
 
 availability_metrics as (
