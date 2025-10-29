@@ -1,0 +1,128 @@
+version: 2
+
+models:
+  - name: fct_tfl__bike_points
+    description: "Analytics-ready, hourly-aggregated bike point data with availability metrics, categorisation, and type conversions"
+    columns:
+      - name: bike_point_id
+        description: "Unique identifier for the bike point"
+        tests:
+          - not_null
+
+      - name: common_name
+        description: "Common name of the bike point location (e.g., 'Phillimore Gardens, Kensington')"
+        tests:
+          - not_null
+
+      - name: terminal_name
+        description: "Terminal identifier for the bike point"
+
+      - name: lat
+        description: "Latitude coordinate"
+        tests:
+          - not_null
+
+      - name: lon
+        description: "Longitude coordinate"
+        tests:
+          - not_null
+
+      - name: hour_timestamp
+        description: "Hour of the day"
+        tests:
+          - not_null
+      
+      - name: avg_bikes_available
+        description: "Average number of bikes available, aggregated by hour"
+
+      - name: avg_standard_bikes_available
+        description: "Average number of standard (non-electric) bikes available, aggregated by hour"
+
+      - name: avg_ebikes_available
+        description: "Average number of electric bikes available, aggregated by hour"
+
+      - name: avg_empty_docks
+        description: "Average number of empty docking stations, aggregated by hour"
+
+      - name: avg_total_docks
+        description: "Average number of docking stations, aggregated by hour"
+
+      - name: avg_utilisation_pct
+        description: "Average percentage of empty bike docks (0-100), aggregated by hour"
+
+      - name: avg_availability_pct
+        description: "Average percentage of bikes available (0-100), aggregated by hour"
+
+      - name: availability_status
+        description: "Categorised availability status based on bike-to-dock ratio"
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['Empty', 'Low', 'Medium', 'High', 'Full']
+
+      - name: is_installed
+        description: "Whether the bike point is currently installed"
+
+      - name: is_locked
+        description: "Whether the bike point is locked"
+
+      - name: is_temporary
+        description: "Whether the bike point is temporary"
+
+      - name: install_timestamp
+        description: "Timestamp when the bike point was installed"
+
+  - name: tfl__bike_point_availability_snapshot
+    description: "Analytics-ready current snapshot of bike point data with availability metrics, categorisation, and type conversions"
+    columns:
+      - name: bike_point_id
+        description: "Unique identifier (PK) for the bike point"
+        tests:
+          - unique
+          - not_null
+
+      - name: common_name
+        description: "Common name of the bike point location"
+
+      - name: terminal_name
+        description: "Terminal identifier for the bike point"
+
+      - name: bikes_available
+        description: "Total number of bikes currently available"
+
+      - name: standard_bikes_available
+        description: "Number of standard (non-electric) bikes available"
+
+      - name: ebikes_available
+        description: "Number of electric bikes available"
+
+      - name: empty_docks
+        description: "Number of empty docking stations"
+
+      - name: total_docks
+        description: "Total number of docking stations"
+
+      - name: utilisation_pct
+        description: "Percentage of empty bike docks (0-100)"
+
+      - name: availability_pct
+        description: "Percentage of bikes currently available (0-100)"
+
+      - name: availability_status
+        description: "Categorised availability status based on bike-to-dock ratio"
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['Empty', 'Low', 'Medium', 'High', 'Full']
+
+      - name: is_installed
+        description: "Whether the bike point is currently installed"
+
+      - name: is_locked
+        description: "Whether the bike point is locked"
+
+      - name: is_temporary
+        description: "Whether the bike point is temporary"
+
+      - name: install_timestamp
+        description: "Timestamp when the bike point was installed"
