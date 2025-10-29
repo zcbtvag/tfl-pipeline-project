@@ -1,6 +1,7 @@
 import os
 import requests
 import duckdb
+import pandas as pd
 from dagster import asset, AssetExecutionContext
 from dagster_dbt import DbtCliResource, dbt_assets
 from pathlib import Path
@@ -13,7 +14,7 @@ API_KEY = os.getenv("TFL_API_KEY")
 
 # Get the project root directory
 PROJECT_ROOT = Path(__file__).parent.parent
-DUCKDB_PATH = PROJECT_ROOT / "tfl_data.duckdb"
+DUCKDB_PATH = os.getenv("DBT_DUCKDB_PATH", str(PROJECT_ROOT / "tfl_data.duckdb"))
 DBT_PROJECT_DIR = PROJECT_ROOT / "tfl_dbt"
 DBT_MANIFEST_PATH = DBT_PROJECT_DIR / "target" / "manifest.json"
 
@@ -32,27 +33,23 @@ def raw_tfl_bike_points(context: AssetExecutionContext):
     data = response.json()
     context.log.info(f"Fetched {len(data)} bike points from API")
 
+    # Convert to pandas DataFrame
+    df = pd.DataFrame(data)
+    df['ingested_at'] = pd.Timestamp.now()
+
     # Connect to DuckDB and create raw schema
     conn = duckdb.connect(str(DUCKDB_PATH))
-
-    # Create raw schema if it doesn't exist
     conn.execute("CREATE SCHEMA IF NOT EXISTS raw")
 
-    # Create table if it doesn't exist (first run only) - DuckDB will infer schema from JSON
-    conn.execute("""
-        CREATE TABLE IF NOT EXISTS raw.bike_points AS
-        SELECT *, CAST(NULL AS TIMESTAMP) AS ingested_at 
-        FROM read_json_auto(?)
-        WHERE 1=0
-    """, [data])
-
-    # Insert new data with timestamp
+    # Create table on first run or insert into existing table
     context.log.info("Loading data into DuckDB raw.bike_points table")
     conn.execute("""
-        INSERT INTO raw.bike_points
-        SELECT *, CURRENT_TIMESTAMP AS ingested_at
-        FROM read_json_auto(?);
-    """, [data])
+        CREATE TABLE IF NOT EXISTS raw.bike_points AS
+        SELECT * FROM df WHERE 1=0
+    """)
+
+    # Insert new data
+    conn.execute("INSERT INTO raw.bike_points SELECT * FROM df")
 
     # Get row count for logging
     row_count = conn.execute("SELECT COUNT(*) FROM raw.bike_points").fetchone()[0]
@@ -72,8 +69,8 @@ def raw_tfl_bike_points(context: AssetExecutionContext):
 def tfl_dbt_models(context: AssetExecutionContext, dbt: DbtCliResource):
     """
     dbt models for TfL data transformation.
-    Layer 2 (Staging): stg_bike_points - cleaned and flattened data
-    Layer 3 (Marts): bike_point_availability - analytics-ready metrics
+    Layer 2 (Staging): stg_tfl__bike_points - cleaned and flattened data
+    Layer 3 (Marts): fct_tfl__bike_points - analytics-ready metrics
 
     Depends on raw_tfl_bike_points to ensure raw data is loaded first.
     """
