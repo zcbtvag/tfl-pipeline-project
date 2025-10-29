@@ -38,14 +38,20 @@ def raw_tfl_bike_points(context: AssetExecutionContext):
     # Create raw schema if it doesn't exist
     conn.execute("CREATE SCHEMA IF NOT EXISTS raw")
 
-    # Drop and recreate the raw table
-    conn.execute("DROP TABLE IF EXISTS raw.bike_points")
+    # Create table if it doesn't exist (first run only) - DuckDB will infer schema from JSON
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS raw.bike_points AS
+        SELECT *, CAST(NULL AS TIMESTAMP) AS ingested_at 
+        FROM read_json_auto(?)
+        WHERE 1=0
+    """, [data])
 
-    # Insert data - DuckDB will infer schema from JSON
+    # Insert new data with timestamp
     context.log.info("Loading data into DuckDB raw.bike_points table")
     conn.execute("""
-        CREATE TABLE raw.bike_points AS
-        SELECT * FROM read_json_auto(?)
+        INSERT INTO raw.bike_points
+        SELECT *, CURRENT_TIMESTAMP AS ingested_at
+        FROM read_json_auto(?);
     """, [data])
 
     # Get row count for logging

@@ -7,7 +7,6 @@ models:
       - name: id
         description: "Unique identifier (PK) for the bike point (e.g., BikePoints_2)"
         tests:
-          - unique
           - not_null
 
       - name: common_name

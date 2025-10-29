@@ -29,6 +29,7 @@ flattened as (
         list_filter("additionalProperties", x -> json_extract_string(x, '$.key') = 'NbDocks')[1]->>'$.value' as nb_docks,
         list_filter("additionalProperties", x -> json_extract_string(x, '$.key') = 'NbStandardBikes')[1]->>'$.value' as nb_standard_bikes,
         list_filter("additionalProperties", x -> json_extract_string(x, '$.key') = 'NbEBikes')[1]->>'$.value' as nb_ebikes,
+        ingested_at
         current_timestamp as dbt_updated_at
     from source
 )
