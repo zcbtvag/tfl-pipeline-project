@@ -8,7 +8,6 @@ with source as (
     select * from {{ source('raw', 'bike_points') }}
 ),
 
--- Extract nested properties from additionalProperties array
 flattened as (
     select
         id,
@@ -17,7 +16,7 @@ flattened as (
         "placeType" as place_type,
         lat,
         lon,
-        -- Extract values from additionalProperties array
+        -- Extract nested properties from additionalProperties array
         list_filter("additionalProperties", x -> json_extract_string(x, '$.key') = 'TerminalName')[1]->>'$.value' as terminal_name,
         list_filter("additionalProperties", x -> json_extract_string(x, '$.key') = 'Installed')[1]->>'$.value' as installed,
         list_filter("additionalProperties", x -> json_extract_string(x, '$.key') = 'Locked')[1]->>'$.value' as locked,
