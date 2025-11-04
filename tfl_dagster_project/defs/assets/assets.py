@@ -1,10 +1,9 @@
 import os
 import requests
-import duckdb
 import pandas as pd
 from dagster import asset, AssetExecutionContext
+from dagster_duckdb import DuckDBResource
 from dagster_dbt import DbtCliResource, dbt_assets
-from pathlib import Path
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -12,15 +11,11 @@ load_dotenv()
 # Get API key from environment variable
 API_KEY = os.getenv("TFL_API_KEY")
 
-# Get the project root directory
-PROJECT_ROOT = Path(__file__).parent.parent
-DUCKDB_PATH = os.getenv("DBT_DUCKDB_PATH", str(PROJECT_ROOT / "tfl_data.duckdb"))
-DBT_PROJECT_DIR = PROJECT_ROOT / "tfl_dbt"
-DBT_MANIFEST_PATH = DBT_PROJECT_DIR / "target" / "manifest.json"
+DBT_MANIFEST_PATH = os.getenv("DBT_MANIFEST")
 
 
 @asset
-def raw_tfl_bike_points(context: AssetExecutionContext):
+def raw_tfl_bike_points(context: AssetExecutionContext, database: DuckDBResource) -> None:
     """
     Extract TfL bike point data from API and load into DuckDB raw schema.
     This is Layer 1: Raw data ingestion with minimal transformation.
@@ -38,29 +33,22 @@ def raw_tfl_bike_points(context: AssetExecutionContext):
     df['ingested_at'] = pd.Timestamp.now()
 
     # Connect to DuckDB and create raw schema
-    conn = duckdb.connect(str(DUCKDB_PATH))
-    conn.execute("CREATE SCHEMA IF NOT EXISTS raw")
+    with database.get_connection() as conn:
+        conn.execute("CREATE SCHEMA IF NOT EXISTS raw")
 
-    # Create table on first run or insert into existing table
-    context.log.info("Loading data into DuckDB raw.bike_points table")
-    conn.execute("""
-        CREATE TABLE IF NOT EXISTS raw.bike_points AS
-        SELECT * FROM df WHERE 1=0
-    """)
+        # Create table on first run or insert into existing table
+        context.log.info("Loading data into DuckDB raw.bike_points table")
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS raw.bike_points AS
+            SELECT * FROM df WHERE 1=0
+        """)
 
-    # Insert new data
-    conn.execute("INSERT INTO raw.bike_points SELECT * FROM df")
+        # Insert new data
+        conn.execute("INSERT INTO raw.bike_points SELECT * FROM df")
 
-    # Get row count for logging
-    row_count = conn.execute("SELECT COUNT(*) FROM raw.bike_points").fetchone()[0]
-    context.log.info(f"Successfully loaded {row_count} rows into raw.bike_points")
-
-    conn.close()
-
-    return {
-        "rows_loaded": row_count,
-        "table": "raw.bike_points"
-    }
+        # Get row count for logging
+        row_count = conn.execute("SELECT COUNT(*) FROM raw.bike_points").fetchone()[0]
+        context.log.info(f"Successfully loaded {row_count} rows into raw.bike_points")
 
 
 @dbt_assets(

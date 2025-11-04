@@ -7,7 +7,8 @@ from dagster import (
 from dagster_dbt import DbtCliResource
 from pathlib import Path
 
-from tfl_dagster_project import assets  # noqa: TID252
+from tfl_dagster_project.defs.assets import assets  # noqa: TID252
+from tfl_dagster_project.defs.resources import database_resource
 
 # Get the dbt project directory
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -34,6 +35,7 @@ defs = Definitions(
     jobs=[tfl_pipeline_job],
     schedules=[tfl_schedule],
     resources={
+        "database": database_resource,
         "dbt": DbtCliResource(
             project_dir=str(DBT_PROJECT_DIR),
         ),

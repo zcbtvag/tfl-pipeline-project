@@ -59,6 +59,7 @@ hourly_aggregated as (
         max(case
             when install_date != '' and install_date is not null
             then to_timestamp(cast(install_date as bigint) / 1000)
+            end
         ) as install_timestamp
     
     from bike_points

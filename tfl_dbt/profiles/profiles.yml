@@ -3,6 +3,6 @@ tfl_dbt:
   outputs:
     dev:
       type: duckdb
-      path: tfl_data.duckdb
+      path: "{{ env_var('DUCKDB_DATABASE') }}"
       schema: main
       threads: 4
