@@ -2,7 +2,7 @@ import os
 import duckdb
 import folium
 import streamlit as st
-from streamlit.folium import st_folium
+from streamlit_folium import st_folium
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -13,9 +13,9 @@ st.title("🚲 London TfL Bike Point Availability")
 # Connect to DuckDB and fetch data
 @st.cache_data
 def load_data():
-    conn = duckdb.connect(os.getenv("DBT_DUCKDB_PATH"))
+    conn = duckdb.connect(os.getenv("DUCKDB_DATABASE"), read_only=True)
     df = conn.execute("""
-        SELECT 
+        SELECT
             bike_point_id,
             common_name,
             lat,
@@ -23,8 +23,8 @@ def load_data():
             avg_bikes_available,
             avg_availability_pct,
             availability_status
-        FROM 
-            marts.tfl__bike_point_availability_snapshot
+        FROM
+            main_marts.tfl__bike_point_availability_snapshot
     """).df()
     conn.close()
     return df
