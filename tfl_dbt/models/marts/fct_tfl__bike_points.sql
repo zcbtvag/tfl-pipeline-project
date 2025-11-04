@@ -22,22 +22,22 @@ hourly_aggregated as (
 
 
         -- Cast to proper types and aggregate by hour
-        round(avg(cast(nb_bikes as integer)), 1) as avg_bikes_available,
-        round(avg(cast(nb_standard_bikes as integer)), 1) as avg_standard_bikes_available,
-        round(avg(cast(nb_ebikes as integer)), 1) as avg_ebikes_available,
-        round(avg(cast(nb_empty_docks as integer)), 1) as avg_empty_docks,
-        round(avg(cast(nb_docks as integer)), 1) as avg_total_docks,
+        round(avg(cast(nb_bikes as integer)), 0) as avg_bikes_available,
+        round(avg(cast(nb_standard_bikes as integer)), 0) as avg_standard_bikes_available,
+        round(avg(cast(nb_ebikes as integer)), 0) as avg_ebikes_available,
+        round(avg(cast(nb_empty_docks as integer)), 0) as avg_empty_docks,
+        round(avg(cast(nb_docks as integer)), 0) as avg_total_docks,
 
         -- Agregate utilisation metrics
         case
             when avg(cast(nb_docks as integer)) > 0
-            then round(avg(cast(nb_bikes as float)) / avg(cast(nb_docks as float)) * 100, 2)
+            then round(avg(cast(nb_bikes as float)) / avg(cast(nb_docks as float)) * 100, 1)
             else 0
         end as avg_availability_pct,
 
         case
             when avg(cast(nb_docks as integer)) > 0
-            then round(avg(cast(nb_empty_docks as float)) / avg(cast(nb_docks as float)) * 100, 2)
+            then round(avg(cast(nb_empty_docks as float)) / avg(cast(nb_docks as float)) * 100, 1)
             else 0
         end as avg_utilisation_pct,
 
