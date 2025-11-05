@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-st.title("🚲 Live London TfL Bike Point Availability (past hour)")
+st.title("🚲 Live London TfL Bike Point Availability")
 
 # Connect to DuckDB and fetch data
 @st.cache_data
@@ -32,7 +32,6 @@ def load_data():
 
 @st.cache_data
 def load_timeseries_data():
-    """Load 24-hour time series data for all bike points"""
     conn = duckdb.connect(os.getenv("DUCKDB_DATABASE"), read_only=True)
     df = conn.execute("""
         SELECT
@@ -50,8 +49,7 @@ def load_timeseries_data():
 
 df = load_data()
 
-st.write(f"Showing {len(df)} bike points")
-st.write("Click on any bike point to see its 24-hour availability trend below")
+st.info(f"Click on any of the {len(df)} bike point markers on the map below to see the 24-hour availability trend")
 
 # Create base map centred on London
 map = folium.Map(
@@ -76,13 +74,9 @@ for i, row in df.iterrows():
     else:
         colour='red'
 
-    # Simple popup with just the name (click instruction)
-    popup_html = f"<b>{row['common_name']}</b><br>Click to see 24-hour trend below"
-
     folium.CircleMarker(
         location=[row['lat'], row['lon']],
         radius=5,
-        popup=folium.Popup(popup_html, max_width=250),
         tooltip=folium.Tooltip(tooltip_html),
         color=colour,
         fill=True,
@@ -122,7 +116,7 @@ if map_data and map_data.get('last_object_clicked'):
 
             fig.add_trace(go.Scatter(
                 x=df_point['hour_timestamp'],
-                y=df_point['avg_availability_pct'],
+                y=df_point['avg_bikes_available'],
                 name='Availability %',
                 line=dict(color='green', width=3),
                 mode='lines+markers',
@@ -132,9 +126,9 @@ if map_data and map_data.get('last_object_clicked'):
             ))
 
             fig.update_layout(
-                title=f"24-Hour Availability Trend",
+                title=f"24-Hour Trend",
                 xaxis=dict(title='Time'),
-                yaxis=dict(title='Availability %', range=[0, 100]),
+                yaxis=dict(title='Number of bikes available', range=[0, 100]),
                 height=400,
                 hovermode='x unified'
             )
@@ -151,5 +145,3 @@ if map_data and map_data.get('last_object_clicked'):
                 st.metric("Current Bikes", f"{clicked_point.iloc[0]['avg_bikes_available']:.0f}")
         else:
             st.info("No historical data available for this bike point yet.")
-else:
-    st.info("👆 Click on any bike point marker on the map to see its 24-hour availability trend")
